@@ -38,10 +38,7 @@ namespace GMapElements
             this.Direction = DecodeDirection((flags >> 7) & 0x01);
             this.Position = (PositionInSection)(flags & 0x03);
 
-            this.Point = new EarthPoint(
-                BitConverter.ToInt32(Data, 4) * 10e-9 * 180 / Math.PI,
-                BitConverter.ToInt32(Data, 8) * 10e-9 * 180 / Math.PI
-                );
+            this.Point = new EarthPoint(BitConverter.ToInt32(Data, 4) * 10e-9 * 180 / Math.PI, BitConverter.ToInt32(Data, 8) * 10e-9 * 180 / Math.PI);
 
             this.ChildrenStartAdress = SubInt(Data, 12, 3) + 1;
         }
