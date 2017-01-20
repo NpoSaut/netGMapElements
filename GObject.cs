@@ -54,6 +54,7 @@ namespace GMapElements
         public int Length { get; set; }
         public AlsnFrequency AlsnFreq { get; set; }
         public string Name { get; set; }
+        public int SpeedRestriction { get; set; }
         public GObjectType Type { get; private set; }
 
         protected override void FillWithBytes(byte[] Data)
@@ -61,6 +62,7 @@ namespace GMapElements
             Type = (GObjectType)Data[0];
             Length = SubInt(Data, 1, 2);
             Ordinate = SubInt(Data, 7, 3);
+            SpeedRestriction = Data[5];
             AlsnFreq = AlsnFromCode(Data[6]);
             Name = Encoding.GetEncoding(1251).GetString(Data, 10, 8).Trim();
         }
