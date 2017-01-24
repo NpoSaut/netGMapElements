@@ -1,43 +1,8 @@
-﻿using System.Text;
+﻿using System.Collections.Generic;
+using System.Text;
 
 namespace GMapElements
 {
-    public enum GObjectType : byte
-    {
-        /// <summary>Светофор</summary>
-        TrafficLight = 1,
-
-        /// <summary>Станция</summary>
-        Station = 2,
-
-        /// <summary>Опасное место</summary>
-        DangerousPlace = 3,
-
-        /// <summary>Мост</summary>
-        Bridge = 4,
-
-        /// <summary>Переезд</summary>
-        Crossing = 5,
-
-        /// <summary>Платформа</summary>
-        Platform = 6,
-
-        /// <summary>Туннель</summary>
-        Tunnel = 7,
-
-        /// <summary>Стрелка</summary>
-        Switch = 8,
-
-        /// <summary>Датчик ТКС</summary>
-        Tks = 9,
-
-        /// <summary>Генератор САУТ</summary>
-        GpuSaut = 10,
-
-        /// <summary>Тупик</summary>
-        DeadEnd = 11
-    }
-
     public enum AlsnFrequency
     {
         Alsn25 = 25,
@@ -50,6 +15,22 @@ namespace GMapElements
     [GLength(20)]
     public class GObject : GElement
     {
+        private readonly Dictionary<int, GObjectType> _objectTypeCodes =
+            new Dictionary<int, GObjectType>
+            {
+                { 1, GObjectType.TrafficLight },
+                { 2, GObjectType.Station },
+                { 3, GObjectType.DangerousPlace },
+                { 4, GObjectType.Bridge },
+                { 5, GObjectType.Crossing },
+                { 6, GObjectType.Platform },
+                { 7, GObjectType.Tunnel },
+                { 8, GObjectType.Switch },
+                { 9, GObjectType.Tks },
+                { 10, GObjectType.GpuSaut },
+                { 11, GObjectType.DeadEnd }
+            };
+
         public int Ordinate { get; set; }
         public int Length { get; set; }
         public AlsnFrequency AlsnFreq { get; set; }
@@ -59,7 +40,7 @@ namespace GMapElements
 
         protected override void FillWithBytes(byte[] Data)
         {
-            Type = (GObjectType)Data[0];
+            Type = _objectTypeCodes.ContainsKey(Data[0]) ? _objectTypeCodes[Data[0]] : GObjectType.Unknown;
             Length = SubInt(Data, 1, 2);
             Ordinate = SubInt(Data, 7, 3);
             SpeedRestriction = Data[5];
@@ -112,6 +93,8 @@ namespace GMapElements
                     return "СВФ";
                 case (GObjectType.Tunnel):
                     return "ТНЛ";
+                case (GObjectType.Unknown):
+                    return "НЗВ";
                 default:
                     return t.ToString();
             }

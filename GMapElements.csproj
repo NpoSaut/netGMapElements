@@ -50,6 +50,7 @@
     <Compile Include="GLengthAttribude.cs" />
     <Compile Include="GMap.cs" />
     <Compile Include="GObject.cs" />
+    <Compile Include="GObjectType.cs" />
     <Compile Include="GPost.cs" />
     <Compile Include="GSection.cs" />
     <Compile Include="GTrack.cs" />
