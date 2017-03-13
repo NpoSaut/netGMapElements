@@ -15,7 +15,7 @@ namespace GMapElements
     [GLength(20)]
     public class GObject : GElement
     {
-        private readonly Dictionary<int, GObjectType> _objectTypeCodes =
+        private static readonly Dictionary<int, GObjectType> _objectTypeCodes =
             new Dictionary<int, GObjectType>
             {
                 { 1, GObjectType.TrafficLight },
