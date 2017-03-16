@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace GMapElements
 {
@@ -15,30 +13,33 @@ namespace GMapElements
         {
             var h = GElement.FromStream<GHeader>(FromStream);
 
-            return new GMap()
-            {
-                Header = h,
-                Sections = LoadSections(FromStream, h.PostsCount).ToList()
-            };
+            return new GMap
+                   {
+                       Header = h,
+                       Sections = LoadSections(FromStream, h.PostsCount).ToList()
+                   };
         }
 
         private static IEnumerable<GSection> LoadSections(Stream str, int PostsCount)
         {
-            int pc = 0;
-            while (pc < PostsCount)
+            var postCounter = 0;
+            var sectionCounter = 1;
+            while (postCounter < PostsCount)
             {
-                var sec = new GSection() { Posts = LoadPosts(str).ToList() };
-                pc += sec.Posts.Count;
+                var sec = new GSection { Id = postCounter, Posts = LoadPosts(str, sectionCounter).ToList() };
+                postCounter += sec.Posts.Count;
+                sectionCounter++;
                 yield return sec;
             }
         }
 
-        private static IEnumerable<GPost> LoadPosts(Stream str)
+        private static IEnumerable<GPost> LoadPosts(Stream str, int SectionId)
         {
             GPost p;
-            while(true)
+            while (true)
             {
                 p = GElement.FromStream<GPost>(str);
+                p.SectionId = SectionId;
                 yield return p;
                 if (p.Position == PositionInSection.End) yield break;
             }
