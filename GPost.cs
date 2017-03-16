@@ -35,7 +35,7 @@ namespace GMapElements
             get { return Children.Where(t => t.IsValid).ToList(); }
         }
 
-        internal PositionInSection Position { get; set; }
+        public PositionInSection Position { get; set; }
         public int SectionId { get; set; }
 
         protected override void FillWithBytes(byte[] Data)
