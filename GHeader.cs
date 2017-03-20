@@ -1,18 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace GMapElements
 {
     [GLength(9)]
     public class GHeader : GElement
     {
-        public int PostsCount { get; set; }
+        public int PostsCount { get; private set; }
+        public ushort Number { get; private set; }
+        public DateTime ConversionDate { get; private set; }
 
         protected override void FillWithBytes(byte[] Data)
         {
-            this.PostsCount = BitConverter.ToInt16(Data, 2);
+            PostsCount = BitConverter.ToInt16(Data, 2);
+            Number = BitConverter.ToUInt16(Data, 4);
+            var conversionYear = Data[6] | ((Data[7] & 0xf0) << 4);
+            var conversionMonth = Data[7] & 0x0f;
+            int conversionDay = Data[8];
+            ConversionDate = new DateTime(conversionYear, conversionMonth, conversionDay);
         }
     }
 }
