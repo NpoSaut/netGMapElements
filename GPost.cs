@@ -23,19 +23,19 @@ namespace GMapElements
     public class GPost : GContainer<GTrack>
     {
         /// <summary>Линейная ордината</summary>
-        public int Ordinate { get; set; }
+        public int Ordinate { get; private set; }
 
         /// <summary>Широта и долгота точки</summary>
-        public EarthPoint Point { get; set; }
+        public EarthPoint Point { get; private set; }
 
-        public OrdinateDirection Direction { get; set; }
+        public OrdinateDirection Direction { get; private set; }
 
         public IList<GTrack> Tracks
         {
             get { return Children.Where(t => t.IsValid).ToList(); }
         }
 
-        public PositionInSection Position { get; set; }
+        public PositionInSection Position { get; private set; }
         public int SectionId { get; set; }
 
         protected override void FillWithBytes(byte[] Data)
@@ -49,7 +49,7 @@ namespace GMapElements
 
             Point = new EarthPoint(BitConverter.ToInt32(Data, 4) * 10e-9 * 180 / Math.PI, BitConverter.ToInt32(Data, 8) * 10e-9 * 180 / Math.PI);
 
-            ChildrenStartAdress = SubInt(Data, 12, 3) + 1;
+            ChildrenStartAddress = SubInt(Data, 12, 3) + 1;
         }
 
         private OrdinateDirection DecodeDirection(int DirectionCode)

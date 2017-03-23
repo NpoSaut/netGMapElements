@@ -31,11 +31,11 @@ namespace GMapElements
                 { 11, GObjectType.DeadEnd }
             };
 
-        public int Ordinate { get; set; }
-        public int Length { get; set; }
-        public AlsnFrequency AlsnFreq { get; set; }
-        public string Name { get; set; }
-        public int SpeedRestriction { get; set; }
+        public int Ordinate { get; private set; }
+        public int Length { get; private set; }
+        public AlsnFrequency AlsnFreq { get; private set; }
+        public string Name { get; private set; }
+        public int SpeedRestriction { get; private set; }
         public GObjectType Type { get; private set; }
 
         protected override void FillWithBytes(byte[] Data)

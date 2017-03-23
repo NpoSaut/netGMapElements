@@ -6,8 +6,8 @@ namespace GMapElements
 {
     public class GMap
     {
-        public GHeader Header { get; set; }
-        public List<GSection> Sections { get; set; }
+        public GHeader Header { get; private set; }
+        public List<GSection> Sections { get; private set; }
 
         public static GMap Load(Stream FromStream)
         {
@@ -35,10 +35,9 @@ namespace GMapElements
 
         private static IEnumerable<GPost> LoadPosts(Stream str, int SectionId)
         {
-            GPost p;
             while (true)
             {
-                p = GElement.FromStream<GPost>(str);
+                var p = GElement.FromStream<GPost>(str);
                 p.SectionId = SectionId;
                 yield return p;
                 if (p.Position == PositionInSection.End) yield break;
