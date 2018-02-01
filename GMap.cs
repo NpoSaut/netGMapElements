@@ -1,47 +1,39 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+using GMapElements.Entities;
+using GMapElements.Readers.Implementations;
+using GMapElements.Readers.Interfaces;
 
 namespace GMapElements
 {
     public class GMap
     {
-        public GHeader Header { get; private set; }
-        public List<GSection> Sections { get; private set; }
-
-        public static GMap Load(Stream FromStream)
+        public GMap(GHeader Header)
         {
-            var h = GElement.FromStream<GHeader>(FromStream);
-
-            return new GMap
-                   {
-                       Header = h,
-                       Sections = LoadSections(FromStream, h.PostsCount).ToList()
-                   };
+            this.Header = Header;
+            Sections    = new List<GSection>();
         }
 
-        private static IEnumerable<GSection> LoadSections(Stream str, int PostsCount)
+        public GHeader         Header   { get; }
+        public IList<GSection> Sections { get; }
+
+        public static GMap Load(string FileName)
         {
-            var postCounter = 0;
-            var sectionCounter = 1;
-            while (postCounter < PostsCount)
+            using (var fs = File.OpenRead(FileName))
             {
-                var sec = new GSection { Id = postCounter, Posts = LoadPosts(str, sectionCounter).ToList() };
-                postCounter += sec.Posts.Count;
-                sectionCounter++;
-                yield return sec;
+                return Load(fs);
             }
         }
 
-        private static IEnumerable<GPost> LoadPosts(Stream str, int SectionId)
+        public static GMap Load(Stream MapStream)
         {
-            while (true)
-            {
-                var p = GElement.FromStream<GPost>(str);
-                p.SectionId = SectionId;
-                yield return p;
-                if (p.Position == PositionInSection.End) yield break;
-            }
+            return Load(MapStream, new MapReader(new HeaderReader(),
+                                                 new PostReader(new TrackReader(new ObjectReader()))));
+        }
+
+        public static GMap Load(Stream MapStream, IMapReader Reader)
+        {
+            return Reader.Read(MapStream);
         }
     }
 }

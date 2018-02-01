@@ -1,4 +1,4 @@
-namespace GMapElements
+namespace GMapElements.Entities
 {
     public enum GObjectType
     {
