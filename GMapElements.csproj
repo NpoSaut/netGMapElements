@@ -67,6 +67,7 @@
     <Compile Include="Readers\Implementations\PostReader.cs" />
     <Compile Include="Readers\Implementations\ReaderBase.cs" />
     <Compile Include="Readers\Implementations\TrackReader.cs" />
+    <Compile Include="Readers\Protocols\IProtocol.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Geographics\Geographics.csproj">

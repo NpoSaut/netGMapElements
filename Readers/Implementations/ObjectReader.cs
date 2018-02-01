@@ -8,7 +8,7 @@ namespace GMapElements.Readers.Implementations
 {
     public class ObjectReader : ReaderBase, IObjectReader
     {
-        private const int RecordLength = 20;
+        //private const int RecordLength = 20;
 
         private static readonly Dictionary<int, GObjectType> _objectTypeCodes =
             new Dictionary<int, GObjectType>
@@ -29,9 +29,16 @@ namespace GMapElements.Readers.Implementations
                 { 17, GObjectType.CurrentSection }
             };
 
+        private readonly int _recordLength;
+
+        public ObjectReader(int RecordLength)
+        {
+            _recordLength = RecordLength;
+        }
+
         public GObject Read(Stream MapStream)
         {
-            var data = ReadBytes(MapStream, RecordLength);
+            var data = ReadBytes(MapStream, _recordLength);
 
             var type             = _objectTypeCodes.ContainsKey(data[0]) ? _objectTypeCodes[data[0]] : GObjectType.Unknown;
             var length           = SubInt(data, 1, 2);
