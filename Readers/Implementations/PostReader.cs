@@ -28,7 +28,7 @@ namespace GMapElements.Readers.Implementations
             var position  = (PositionInSection)(flags & 0x03);
             var point     = new EarthPoint(BitConverter.ToInt32(postData, 4) * 10e-9 * 180 / Math.PI,
                                            BitConverter.ToInt32(postData, 8) * 10e-9 * 180 / Math.PI);
-            var childrenStartAddress = SubInt(postData, 12, 3) + 1;
+            var childrenStartAddress = SubInt(postData, 12, 3);
 
             var post = new GPost(ordinate, point, direction, position, SectionId);
 
