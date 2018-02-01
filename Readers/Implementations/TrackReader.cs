@@ -1,7 +1,7 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using GMapElements.Entities;
 using GMapElements.Readers.Interfaces;
-using JetBrains.Annotations;
 
 namespace GMapElements.Readers.Implementations
 {
@@ -27,15 +27,21 @@ namespace GMapElements.Readers.Implementations
 
             var track = new GTrack(number);
 
-            var previousPosition = MapStream.Position;
-            MapStream.Seek(childrenStartAddress, SeekOrigin.Begin);
-            for (var i = 0; i < childrenCount; i++)
+            if (childrenCount > 0)
             {
-                var obj = _objectReader.Read(MapStream);
-                track.Objects.Add(obj);
-            }
+                if (childrenStartAddress == 0)
+                    throw new IndexOutOfRangeException();
 
-            MapStream.Seek(previousPosition, SeekOrigin.Begin);
+                var previousPosition = MapStream.Position;
+                MapStream.Seek(childrenStartAddress, SeekOrigin.Begin);
+                for (var i = 0; i < childrenCount; i++)
+                {
+                    var obj = _objectReader.Read(MapStream);
+                    track.Objects.Add(obj);
+                }
+
+                MapStream.Seek(previousPosition, SeekOrigin.Begin);
+            }
 
             return track;
         }
