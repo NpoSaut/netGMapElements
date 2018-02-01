@@ -18,13 +18,14 @@ namespace GMapElements.Entities
 
     public class GPost : GElement
     {
-        public GPost(int Ordinate, EarthPoint Point, OrdinateDirection Direction, PositionInSection Position, int SectionId)
+        public GPost(int Ordinate, EarthPoint Point, OrdinateDirection Direction, PositionInSection Position, int SectionId, bool Crossing)
         {
             this.Ordinate  = Ordinate;
             this.Point     = Point;
             this.Direction = Direction;
             this.Position  = Position;
             this.SectionId = SectionId;
+            this.Crossing  = Crossing;
             Tracks         = new List<GTrack>();
         }
 
@@ -40,6 +41,7 @@ namespace GMapElements.Entities
 
         public PositionInSection Position  { get; }
         public int               SectionId { get; }
+        public bool              Crossing  { get; }
 
         public override string ToString()
         {
