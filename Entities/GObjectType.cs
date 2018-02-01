@@ -36,6 +36,15 @@ namespace GMapElements.Entities
         DeadEnd,
 
         /// <summary>Тип неизвестен</summary>
-        Unknown
+        Unknown,
+
+        /// <summary>Проба тормозов</summary>
+        BrakeCheck,
+
+        /// <summary>Нейтральная вставка</summary>
+        NeutralInsertion,
+
+        /// <summary>Токораздел</summary>
+        CurrentSection
     }
 }

@@ -23,7 +23,10 @@ namespace GMapElements.Readers.Implementations
                 { 8, GObjectType.Switch },
                 { 9, GObjectType.Tks },
                 { 10, GObjectType.GpuSaut },
-                { 11, GObjectType.DeadEnd }
+                { 11, GObjectType.DeadEnd },
+                { 15, GObjectType.BrakeCheck },
+                { 16, GObjectType.NeutralInsertion },
+                { 17, GObjectType.CurrentSection }
             };
 
         public GObject Read(Stream MapStream)
@@ -35,7 +38,7 @@ namespace GMapElements.Readers.Implementations
             var ordinate         = SubInt(data, 7, 3);
             var speedRestriction = data[5];
             var alsnFreq         = AlsnFromCode(data[6]);
-            var name             = Encoding.GetEncoding(1251).GetString(data, 10, 8).Trim('\0');
+            var name             = Encoding.GetEncoding(1251).GetString(data, 10, 8).Trim('\0', ' ');
 
             return new GObject(ordinate, length, type, name, alsnFreq, speedRestriction);
         }
