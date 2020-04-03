@@ -56,6 +56,7 @@
     <Compile Include="Entities\GSection.cs" />
     <Compile Include="Entities\GTrack.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Readers\Implementations\ExtendedHeaderReader.cs" />
     <Compile Include="Readers\Implementations\HeaderReader.cs" />
     <Compile Include="Readers\Interfaces\IHeaderReader.cs" />
     <Compile Include="Readers\Interfaces\IMapReader.cs" />

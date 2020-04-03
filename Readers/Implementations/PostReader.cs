@@ -9,26 +9,27 @@ namespace GMapElements.Readers.Implementations
 {
     public class PostReader : ReaderBase, IPostReader
     {
-        private const int HeaderLength = 15;
+        private readonly int _recordLength;
 
         private readonly ITrackReader _trackReader;
 
-        public PostReader(ITrackReader TrackReader)
+        public PostReader(int recordLength, ITrackReader TrackReader)
         {
-            _trackReader = TrackReader;
+            _trackReader  = TrackReader;
+            _recordLength = recordLength;
         }
 
         public GPost Read(Stream MapStream, int SectionId)
         {
-            var postData = ReadBytes(MapStream, HeaderLength);
+            var postData = ReadBytes(MapStream, _recordLength);
 
             var ordinate  = BitConverter.ToInt32(postData.Take(3).Concat(new byte[1]).ToArray(), 0);
             var flags     = postData[3];
             var direction = DecodeDirection((flags >> 7) & 0x01);
-            var position  = (PositionInSection)(flags & 0x03);
-            var crossing = (flags & (1 << 6)) > 0;
-            var point     = new EarthPoint(BitConverter.ToInt32(postData, 4) * 10e-9 * 180 / Math.PI,
-                                           BitConverter.ToInt32(postData, 8) * 10e-9 * 180 / Math.PI);
+            var position  = (PositionInSection) (flags & 0x03);
+            var crossing  = (flags                     & (1 << 6)) > 0;
+            var point = new EarthPoint(BitConverter.ToInt32(postData, 4) * 10e-9 * 180 / Math.PI,
+                                       BitConverter.ToInt32(postData, 8) * 10e-9 * 180 / Math.PI);
             var childrenStartAddress = SubInt(postData, 12, 3);
 
             var post = new GPost(ordinate, point, direction, position, SectionId, crossing);

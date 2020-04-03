@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using GMapElements.Entities;
@@ -18,6 +19,13 @@ namespace GMapElements
         public GHeader         Header   { get; }
         public IList<GSection> Sections { get; }
 
+        private static IProtocol[] _supportedProtocols =
+        {
+            new Protocol1(),
+            new Protocol2(),
+            new Protocol3(),
+        };
+
         public static GMap Load(string FileName)
         {
             using (var fs = File.OpenRead(FileName))
@@ -34,18 +42,30 @@ namespace GMapElements
                           .SelectMany(s => s.Posts.SelectMany(p => p.Tracks.SelectMany(t => t.Objects)))
                           .Count(o => o.Type == GObjectType.Unknown);
             }
+            
+            
+            var results = new List<GMap>();
 
-            var map1 = Load(MapStream, new OldProtocol());
+            foreach (var protocol in _supportedProtocols)
+            {
+                try
+                {
+                    MapStream.Seek(0, SeekOrigin.Begin);
+                    var map = Load(MapStream, protocol);
+                    results.Add(map);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Не смогли загрузить карту, используя протокол {protocol.GetType().Name}: {e.Message}");
+                }
+            }
 
-            var map1UnknownObjectsCount = CountUnknownObjects(map1);
-            if (map1UnknownObjectsCount == 0)
-                return map1;
-
-            MapStream.Seek(0, SeekOrigin.Begin);
-            var map2 = Load(MapStream, new NewProtocol());
-            var map2UnknownObjectsCount = CountUnknownObjects(map2);
-
-            return map1UnknownObjectsCount < map2UnknownObjectsCount ? map1 : map2;
+            var bestResult = results.OrderBy(CountUnknownObjects).FirstOrDefault();
+            
+            if (bestResult == null)
+                throw new ApplicationException("Не удалось расшифровать карту. Файл карты повреждён, либо вышел новый формат электронной карты.");
+            
+            return bestResult;
         }
 
         public static GMap Load(Stream MapStream, IProtocol Protocol)

@@ -7,17 +7,18 @@ namespace GMapElements.Readers.Implementations
 {
     public class TrackReader : ReaderBase, ITrackReader
     {
-        private const int ElementLength = 5;
+        private int _recordLength;
         private readonly IObjectReader _objectReader;
 
-        public TrackReader(IObjectReader ObjectReader)
+        public TrackReader(int recordLength, IObjectReader ObjectReader)
         {
             _objectReader = ObjectReader;
+            _recordLength = recordLength;
         }
 
         public GTrack Read(Stream MapStream)
         {
-            var data                 = ReadBytes(MapStream, ElementLength);
+            var data                 = ReadBytes(MapStream, _recordLength);
             var number               = data[0];
             var childrenCount        = data[1];
             var childrenStartAddress = SubInt(data, 2, 3);
